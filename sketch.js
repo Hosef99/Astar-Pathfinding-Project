@@ -1,18 +1,19 @@
 //tileSpace : tileSize = 1:15
 var tileSpace;
 var tileSize;
+var smallTextSize;
 
 function setup() {
   tileSpace = (windowHeight/gridWidth)/30;
   tileSize = (windowHeight/gridWidth)*(14/15);
+  smallTextSize = (windowHeight/gridWidth)*(1/5);
   
+  console.log((windowHeight/gridWidth));
   createCanvas(windowWidth, windowHeight);
   frameRate(6);
 }
 function draw() {
   background(220);
-  DrawGrid();
-  DrawObstacles();
   if(search){
     OpenNode();
   }
@@ -25,8 +26,12 @@ function draw() {
     }
     frameRate(30);    
     DrawVectorPath();
+    
   }
+  DrawGrid();
+  DrawObstacles();
   DrawStartAndEnd();
+  DrawText();
 }
 
 function DrawGrid(){
@@ -42,21 +47,20 @@ function DrawGrid(){
   
   for(var k=0;k<vectorArray.length;k++){
     if(nodeArray[k].opened){
-      fill('#9A0E0E');
-      rect((windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth),tileSize,tileSize);
-      //fill('black');
-      //textSize(20);
-      //text(JSON.stringify(Math.round(nodeArray[k].g*100)/100),(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)-50);
+      fill('#9A0E0E'); 
     }
-    
+    else{
+      fill('#FFFF00');
+    }
+    rect((windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth),tileSize,tileSize);
   }
 }
 
 var vectorPathDrawIndex = 0;
 
 function DrawVectorPath(){
-  fill('#115A9A');
   for(var k=0;k<vectorPathDrawIndex;k++){
+    fill('#115A9A');
     rect((windowWidth/2-windowHeight/2)+vectorPath[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorPath[k].y*(windowHeight/gridWidth),tileSize,tileSize);
   }
   if(vectorPathDrawIndex<vectorPath.length){
@@ -78,3 +82,15 @@ function DrawObstacles(){
   }
 }
 
+function DrawText(){
+  for(var k=0;k<vectorArray.length;k++){
+    fill('black');
+    textSize(smallTextSize);
+    text('G:'+JSON.stringify(Math.round(nodeArray[k].g*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/3.5);
+    
+    text('H:'+JSON.stringify(Math.round(nodeArray[k].h*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/2);
+  
+    fill('black');
+    text('F:'+JSON.stringify(Math.round(nodeArray[k].f*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/1.25);
+  }
+}
