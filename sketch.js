@@ -24,7 +24,7 @@ function draw() {
     } 
     else if(!search && !restState){
         if (vectorPath.length == 0) {
-            console.log("Couldn't get to the EndPos");
+            alert("Couldn't reach end");
         }
         frameRate(40);
         endDraw = true;

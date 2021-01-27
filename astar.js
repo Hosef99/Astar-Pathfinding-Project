@@ -1,8 +1,8 @@
-var gridWidth = 10;
-var gridHeight = 10;
+var gridWidth = 20;
+var gridHeight = 20;
 
 var startPos = new Vector(0,0);
-var endPos = new Vector(9,9);
+var endPos = new Vector(gridWidth-1,gridHeight-1);
 var search = true;
 
 var vectorArray = [startPos];
@@ -10,8 +10,8 @@ var nodeArray = [new node(null,0,Vector.dist(startPos,endPos))];
 var lastCallNodeArrayLength;
 var vectorPath = [];
 
-var directions = [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1)]; //four directions only = [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1)] 8 dir : [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1), new Vector(1,1), new Vector(1,-1), new Vector(-1,1), new Vector(-1,-1)]
-var obstacle = [new Vector(1,0),new Vector(1,1),new Vector(1,2),new Vector(1,3),new Vector(1,4),new Vector(1,5),new Vector(1,6),new Vector(1,7),new Vector(1,8),new Vector(2,7),new Vector(3,7),new Vector(3,0),new Vector(3,1),new Vector(3,3),new Vector(3,5),new Vector(4,0),new Vector(4,1),new Vector(4,3),new Vector(4,5),new Vector(5,0),new Vector(5,1),new Vector(5,3),new Vector(5,5),new Vector(5,6),new Vector(5,7),new Vector(5,8),new Vector(5,9),new Vector(6,0),new Vector(6,1),new Vector(6,3),new Vector(6,6),new Vector(6,7),new Vector(6,8),new Vector(6,9),new Vector(7,0),new Vector(7,1),new Vector(7,3),new Vector(7,4),new Vector(7,5),new Vector(7,6),new Vector(8,0),new Vector(8,1),new Vector(9,0),new Vector(9,1)];
+var directions = [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1), new Vector(1,1), new Vector(1,-1), new Vector(-1,1), new Vector(-1,-1)]; //four directions only = [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1)] 8 dir : [new Vector(1,0),new Vector(0,1),new Vector(-1,0),new Vector(0,-1), new Vector(1,1), new Vector(1,-1), new Vector(-1,1), new Vector(-1,-1)]
+var obstacle = [];
 
 function FindParent(child){
     

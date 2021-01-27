@@ -31,19 +31,28 @@ function startSearchButton(){
     vectorPath = []
     vectorArray = [startPos];
     nodeArray = [new node(null,0,Vector.dist(startPos,endPos))];
-    frameRate(6);
+    frameRate(10);
 }
 
 function pauseSearchButton(){
     if(!endDraw){
         restState = true;
         search = false;
+        frameRate(100);
     }
 }
 
 function resumeSearchButton(){
     restState = false;
     search = true;
+    frameRate(10);
+}
+
+function clearAllNodesButton(){
+    vectorPathDrawIndex = 0;
+    vectorPath = []
+    vectorArray = [startPos];
+    nodeArray = [new node(null,0,Vector.dist(startPos,endPos))];
 }
 
 function createButtons(){
@@ -71,5 +80,8 @@ function createButtons(){
     var resumeButton = createButton("Resume");
     resumeButton.mousePressed(resumeSearchButton);
     resumeButton.position(0,210);
+    var clearNodesButton = createButton("Clear All Nodes");
+    clearNodesButton.mousePressed(clearAllNodesButton);
+    clearNodesButton.position(0,240);
 }
 
