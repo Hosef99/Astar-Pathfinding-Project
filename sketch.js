@@ -2,95 +2,102 @@
 var tileSpace;
 var tileSize;
 var smallTextSize;
+var endDraw = false;
+var restState = true;
 
 function setup() {
-  tileSpace = (windowHeight/gridWidth)/30;
-  tileSize = (windowHeight/gridWidth)*(14/15);
-  smallTextSize = (windowHeight/gridWidth)*(1/5);
-  
-  console.log((windowHeight/gridWidth));
-  createCanvas(windowWidth, windowHeight);
-  frameRate(6);
+    tileSpace = (windowHeight / gridWidth) / 30;
+    tileSize = (windowHeight / gridWidth) * (14 / 15);
+    smallTextSize = (windowHeight / gridWidth) * (1 / 5);
+
+    console.log((windowHeight / gridWidth));
+    createCanvas(windowWidth, windowHeight);
+    createButtons();
+    frameRate(100);
 }
+
 function draw() {
-  background(220);
-  if(search){
-    OpenNode();
-  }
-  else{
-    if(vectorPath.length == 0){
-      console.log("Couldn't get to the EndPos");
+    MousePositionInGrid();
+    background(220);
+    if (search && !restState) {
+        OpenNode();
+    } 
+    else if(!search && !restState){
+        if (vectorPath.length == 0) {
+            console.log("Couldn't get to the EndPos");
+        }
+        frameRate(40);
+        endDraw = true;
     }
-    else{
-      
+    DrawGrid();
+    if (endDraw) {
+        DrawVectorPath();
     }
-    frameRate(30);    
-    DrawVectorPath();
-    
-  }
-  DrawGrid();
-  DrawObstacles();
-  DrawStartAndEnd();
-  DrawText();
+    DrawStartAndEnd();
+    DrawText();
+    DrawObstacles();
 }
 
-function DrawGrid(){
-  fill('#262426');
-  rect(windowWidth/2-windowHeight/2,0,windowHeight,windowHeight);
-
-  for(var y=0;y<gridWidth;y++){
-    for(var x=0;x<gridWidth;x++){
-      fill('white');
-      rect((windowWidth/2-windowHeight/2)+x*(windowHeight/gridWidth)+tileSpace,tileSpace+y*(windowHeight/gridWidth),tileSize,tileSize);
+function mouseDragged() {
+    if (!outOfBounds && restState) {
+        switch (state) {
+            case "Draw Obstacles":
+                var isBreak = false;
+                for (var i = 0; i < obstacle.length; i++) {
+                    if (Vector.equals(obstacle[i], new Vector(x, y))) {
+                        isBreak = true;
+                        break;
+                    }
+                }
+                if (!isBreak) {
+                    obstacle.push(new Vector(x, y))
+                }
+                break;
+            case "Erase Obstacles":
+                for (var i = 0; i < obstacle.length; i++) {
+                    if (Vector.equals(obstacle[i], new Vector(x, y))) {
+                        console.log("Erase Obstacle");
+                        obstacle.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+        }
     }
-  }
-  
-  for(var k=0;k<vectorArray.length;k++){
-    if(nodeArray[k].opened){
-      fill('#9A0E0E'); 
+}
+
+function mousePressed() {
+    if (!outOfBounds && restState) {
+        switch (state) {
+            case "Change Start Position":
+                startPos = new Vector(x, y);
+                nodeArray = [new node(null,0,Vector.dist(startPos,endPos))];
+                vectorArray = [startPos]
+                break;
+            case "Change End Position":
+                endPos = new Vector(x, y);
+                break;
+            case "Draw Obstacles":
+                var isBreak = false;
+                for (var i = 0; i < obstacle.length; i++) {
+                    if (Vector.equals(obstacle[i], new Vector(x, y))) {
+                        isBreak = true;
+                        break;
+                    }
+                }
+                if (!isBreak) {
+                    obstacle.push(new Vector(x, y))
+                }
+                break;
+            case "Erase Obstacles":
+                for (var i = 0; i < obstacle.length; i++) {
+                    if (Vector.equals(obstacle[i], new Vector(x, y))) {
+                        obstacle.splice(i, 1);
+                        break;
+                    }
+                }
+                break;
+        }
     }
-    else{
-      fill('#FFFF00');
-    }
-    rect((windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth),tileSize,tileSize);
-  }
 }
 
-var vectorPathDrawIndex = 0;
-
-function DrawVectorPath(){
-  for(var k=0;k<vectorPathDrawIndex;k++){
-    fill('#115A9A');
-    rect((windowWidth/2-windowHeight/2)+vectorPath[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorPath[k].y*(windowHeight/gridWidth),tileSize,tileSize);
-  }
-  if(vectorPathDrawIndex<vectorPath.length){
-    vectorPathDrawIndex++;
-  }
-}
-
-function DrawStartAndEnd(){
-  fill('#00FF00');
-  rect((windowWidth/2-windowHeight/2)+startPos.x*(windowHeight/gridWidth)+tileSpace,tileSpace+startPos.y*(windowHeight/gridWidth),tileSize,tileSize);
-  fill('#179C00')
-  rect((windowWidth/2-windowHeight/2)+endPos.x*(windowHeight/gridWidth)+tileSpace,tileSpace+endPos.y*(windowHeight/gridWidth),tileSize,tileSize);
-}
-
-function DrawObstacles(){
-  fill('black');
-  for(var j=0;j<obstacle.length;j++){
-    rect((windowWidth/2-windowHeight/2)+obstacle[j].x*(windowHeight/gridWidth)+tileSpace,tileSpace+obstacle[j].y*(windowHeight/gridWidth),tileSize,tileSize);
-  }
-}
-
-function DrawText(){
-  for(var k=0;k<vectorArray.length;k++){
-    fill('black');
-    textSize(smallTextSize);
-    text('G:'+JSON.stringify(Math.round(nodeArray[k].g*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/3.5);
-    
-    text('H:'+JSON.stringify(Math.round(nodeArray[k].h*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/2);
-  
-    fill('black');
-    text('F:'+JSON.stringify(Math.round(nodeArray[k].f*10)/10),(windowHeight/gridWidth)/15+(windowWidth/2-windowHeight/2)+vectorArray[k].x*(windowHeight/gridWidth)+tileSpace,tileSpace+vectorArray[k].y*(windowHeight/gridWidth)+(windowHeight/gridWidth)/1.25);
-  }
-}
