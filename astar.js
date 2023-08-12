@@ -61,17 +61,31 @@ function OpenNode(){
             
         }
         else{
+            console.log()
             var findVectorIndex = -1;
             for(var j = 0 ; j < vectorArray.length ; j++){
                 if(Vector.equals(finalVector,vectorArray[j])){
                     findVectorIndex = j;
+                    break;
                 }
             }
-            vectorArray.push(finalVector);
-            nodeArray.push(new node(nodeArray[index],nodeArray[index].g+Vector.dist(finalVector,vectorArray[index]),Vector.dist(endPos,finalVector)));
             if( findVectorIndex != -1){
-                vectorArray.pop(findVectorIndex);
-                nodeArray.pop(findVectorIndex);
+                var newGCost = nodeArray[index].g + Vector.dist(directions[i], new Vector(0,0))
+                var hCost = nodeArray[findVectorIndex].h
+                var newFCost = newGCost + hCost
+                
+                if (nodeArray[findVectorIndex].g > newGCost) {
+                    nodeArray[findVectorIndex].g = newGCost;
+                }
+                if (nodeArray[findVectorIndex].f > newFCost) {
+                    nodeArray[findVectorIndex].f = newFCost;
+                    nodeArray[findVectorIndex].parent = nodeArray[index]
+                }
+
+            }
+            else{
+                vectorArray.push(finalVector);
+                nodeArray.push(new node(nodeArray[index],nodeArray[index].g+Vector.dist(finalVector,vectorArray[index]),Vector.dist(endPos,finalVector)));
             }
         }
 

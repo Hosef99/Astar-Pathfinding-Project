@@ -45,6 +45,7 @@ function pauseSearchButton(){
 function resumeSearchButton(){
     restState = false;
     search = true;
+    endDraw = false;
     frameRate(10);
 }
 
@@ -53,6 +54,26 @@ function clearAllNodesButton(){
     vectorPath = []
     vectorArray = [startPos];
     nodeArray = [new node(null,0,Vector.dist(startPos,endPos))];
+}
+
+function next(){
+    restState = true;
+    search = false
+    OpenNode()
+    if(!search && !restState){
+        if (vectorPath.length == 0) {
+            alert("Couldn't reach end");
+        }
+        frameRate(40);
+        endDraw = true;
+    }
+    if (endDraw) {
+        DrawVectorPath();
+    }
+    DrawGrid();
+    DrawStartAndEnd();
+    DrawText();
+    DrawObstacles();
 }
 
 function createButtons(){
@@ -83,5 +104,8 @@ function createButtons(){
     var clearNodesButton = createButton("Clear All Nodes");
     clearNodesButton.mousePressed(clearAllNodesButton);
     clearNodesButton.position(0,240);
+    var clearNodesButton = createButton("Next");
+    clearNodesButton.mousePressed(next);
+    clearNodesButton.position(0,270);
 }
 
